@@ -1,10 +1,28 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './Profile.css'
 import { Card,Row } from 'react-bootstrap'
+import { useParams } from 'react-router-dom'
+import { getsingleuser } from '../../services/allapi'
+import { base_url } from '../../services/base_url'
 
 
 
 function Profile() {
+
+  const {id}= useParams()
+
+  const [userdetail,setuserdetail]=useState({})
+
+  const userdetails=async()=>{
+    const {data}= await getsingleuser(id)
+
+    setuserdetail(data)
+  }
+  useEffect(()=>{
+       userdetails()
+  },[])
+
+  console.log(userdetail);
   return (
     <>
     <div className="container mb-5">
@@ -15,19 +33,19 @@ function Profile() {
           <Row>
             <div className="col">
               <div className="image d-flex justify-content-center">
-              <img width={'300px'} height={'275px'} src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="" />
+              <img width={'300px'} height={'275px'} src={`${base_url}/uploads/${userdetail.profile}`}  alt="" />
 
               </div>
             </div>
           </Row>
 
           <div className="text-center mt-4">
-            <h3 >Max Miller</h3>
-            <h5><i  class="fa-solid fa-envelope text-primary fs-3"></i> Max@gmail.com</h5>
-            <h5><i  class="fa-thin fa-mobile fs-3 text-primary"></i>:- 1234567890</h5>
-            <h5><i  class="fa-solid fa-venus-mars text-info fs-3"></i>Male</h5>
-            <h5><i  class="fa-solid fa-location-dot fs-3"></i>Brooklyn</h5>
-            <h5><i  class="fa-solid fa-chart-line fs-3 text-success me-3"></i>Status: Active</h5>
+            <h3 >{`${userdetail.fname} ${userdetail.lname}`}</h3>
+            <h5><i  class="fa-solid fa-envelope text-primary fs-3"></i>{userdetail.email}</h5>
+            <h5><i  class="fa-thin fa-mobile fs-3 text-primary"></i>:- {userdetail.mobile}</h5>
+            <h5><i  class="fa-solid fa-venus-mars text-info fs-3"></i>{userdetail.gender}</h5>
+            <h5><i  class="fa-solid fa-location-dot fs-3"></i>{userdetail.location}</h5>
+            <h5><i  class="fa-solid fa-chart-line fs-3 text-success me-3"></i>Status: {userdetail.status}</h5>
           </div>
 
         </Card.Body>
